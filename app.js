@@ -1,306 +1,394 @@
-const rolesData = {
-  NZP: ["Constable","Senior Constable","Sergeant","Senior Sergeant","Inspector"],
-  FENZ: ["Firefighter","Senior Firefighter","Station Officer"],
-  "St John": ["EMT","Paramedic","Clinical Lead"],
-  DOT: ["Traffic Officer","Senior Traffic Officer","Supervisor"],
-  Staff: ["Moderator","Senior Moderator","Supervisor","Administrator","Management"]
-};
-
 const units = [
-  ["NZP 2A-21","NZP","Ford Explorer","NZP-201",31,43,"🚓",82,"North","Normal"],
-  ["NZP 4A-17","NZP","BMW M5","NZP-417",60,29,"🚓",104,"East","Normal"],
-  ["FENZ 12","FENZ","Scania P-Series","FENZ-12",74,62,"🚒",71,"South","Normal"],
-  ["STJ 104","STJ","Mercedes Sprinter","STJ-104",44,68,"🚑",63,"West","Normal"],
-  ["DOT 88","DOT","Toyota Hilux","DOT-88",18,72,"🚧",55,"North","Normal"],
-  ["NZP 9A-11","NZP","Kia Stinger","NZP-911",82,26,"🚓",118,"East","High"],
-  ["FENZ 21","FENZ","Isuzu F-Series","FENZ-21",67,80,"🚒",58,"South","Normal"],
-  ["STJ 221","STJ","Toyota HiAce","STJ-221",27,22,"🚑",76,"West","Normal"]
+  {
+    id: "NZP-21",
+    dept: "NZP",
+    name: "2A-21",
+    vehicle: "Ford Explorer",
+    reg: "NZP-201",
+    speed: 82,
+    heading: "North",
+    x: 32,
+    y: 38,
+    icon: "🚓",
+    status: "Available"
+  },
+  {
+    id: "NZP-17",
+    dept: "NZP",
+    name: "4A-17",
+    vehicle: "BMW M5",
+    reg: "NZP-417",
+    speed: 64,
+    heading: "East",
+    x: 58,
+    y: 30,
+    icon: "🚓",
+    status: "En Route"
+  },
+  {
+    id: "FENZ-12",
+    dept: "FENZ",
+    name: "12",
+    vehicle: "Scania P-Series",
+    reg: "FENZ-12",
+    speed: 51,
+    heading: "South",
+    x: 72,
+    y: 62,
+    icon: "🚒",
+    status: "Available"
+  },
+  {
+    id: "STJ-104",
+    dept: "STJ",
+    name: "104",
+    vehicle: "Mercedes Sprinter",
+    reg: "STJ-104",
+    speed: 58,
+    heading: "West",
+    x: 44,
+    y: 68,
+    icon: "🚑",
+    status: "On Scene"
+  },
+  {
+    id: "DOT-88",
+    dept: "DOT",
+    name: "88",
+    vehicle: "Toyota Hilux",
+    reg: "DOT-88",
+    speed: 43,
+    heading: "North",
+    x: 20,
+    y: 72,
+    icon: "🚧",
+    status: "Available"
+  }
 ];
 
-let selectedUnit = units[0];
+let calls = [
+  {
+    id: "CALL-001",
+    type: "Traffic Collision",
+    location: "Liberty County Highway",
+    priority: "HIGH",
+    units: ["NZP-17", "STJ-104"]
+  },
+  {
+    id: "CALL-002",
+    type: "Structure Fire",
+    location: "Central Liberty County",
+    priority: "CRITICAL",
+    units: ["FENZ-12"]
+  }
+];
 
-function go(id) {
-  document.querySelector(`[data-page="${id}"]`).click();
+let selectedUnit = null;
+let currentFilter = "ALL";
+
+/* NAVIGATION */
+
+function openPage(page) {
+
+  document.querySelectorAll(".page").forEach(section => {
+    section.classList.remove("active");
+  });
+
+  document.querySelectorAll(".nav").forEach(button => {
+    button.classList.remove("active");
+  });
+
+  const target = document.getElementById(page);
+
+  if (target) {
+    target.classList.add("active");
+  }
+
+  const nav = document.querySelector(`[data-page="${page}"]`);
+
+  if (nav) {
+    nav.classList.add("active");
+  }
+
+  const titles = {
+    overview: "Overview",
+    map: "Live Map",
+    dispatch: "Dispatch",
+    units: "Units",
+    departments: "Departments",
+    reports: "Reports",
+    applications: "Applications",
+    watchdog: "AI Watchdog",
+    management: "Management"
+  };
+
+  document.getElementById("pageTitle").textContent =
+    titles[page] || "Command Hub";
 }
 
-document.querySelectorAll("nav button").forEach(button => {
+document.querySelectorAll(".nav").forEach(button => {
 
-  button.onclick = () => {
-
-    document.querySelectorAll("nav button")
-      .forEach(x => x.classList.remove("active"));
-
-    button.classList.add("active");
-
-    document.querySelectorAll(".page")
-      .forEach(x => x.classList.remove("active"));
-
-    document
-      .getElementById(button.dataset.page)
-      .classList.add("active");
-
-    let title = button.textContent
-      .trim()
-      .replace("2","");
-
-    document.getElementById("title").textContent = title;
-    document.getElementById("crumb").textContent = title.toUpperCase();
-
-    if(button.dataset.page === "operations"){
-      draw();
-    }
-  };
+  button.addEventListener("click", () => {
+    openPage(button.dataset.page);
+  });
 
 });
 
+/* FILTERS */
 
-function draw(filter = "ALL", btn) {
+document.querySelectorAll(".filter").forEach(button => {
 
-  if(btn){
+  button.addEventListener("click", () => {
 
-    document.querySelectorAll(".filter")
-      .forEach(x => x.classList.remove("active"));
+    document.querySelectorAll(".filter").forEach(b => {
+      b.classList.remove("active");
+    });
 
-    btn.classList.add("active");
+    button.classList.add("active");
 
-  }
+    currentFilter = button.dataset.filter;
 
-  const map = document.getElementById("map");
+    renderMap();
+    renderUnitList();
+  });
 
-  map.querySelectorAll(".blip").forEach(x => x.remove());
+});
 
-  const filtered = units.filter(unit =>
-    filter === "ALL" || unit[1] === filter
-  );
+/* MAP */
+
+function renderMap() {
+
+  const container = document.getElementById("markers");
+
+  container.innerHTML = "";
+
+  const filtered = units.filter(unit => {
+    return currentFilter === "ALL" ||
+      unit.dept === currentFilter;
+  });
 
   filtered.forEach(unit => {
 
     const marker = document.createElement("button");
 
-    marker.className =
-      "blip " + unit[1].toLowerCase();
+    marker.className = `marker ${unit.dept}`;
 
-    marker.style.left = unit[4] + "%";
-    marker.style.top = unit[5] + "%";
+    marker.style.left = `${unit.x}%`;
+    marker.style.top = `${unit.y}%`;
 
-    marker.textContent = unit[6];
+    marker.innerHTML = unit.icon;
 
-    marker.title = unit[0];
+    marker.title = `${unit.dept} ${unit.name}`;
 
-    marker.onclick = () => selectUnit(unit);
+    marker.addEventListener("click", () => {
+      selectUnit(unit);
+    });
 
-    map.appendChild(marker);
+    container.appendChild(marker);
 
   });
 
-  document.getElementById("mapUnitCount").textContent =
-    filtered.length;
-
 }
 
+/* UNIT LIST */
 
-function renderUnits() {
+function renderUnitList() {
 
-  document.getElementById("units").innerHTML =
-    units.map(unit => {
+  const lists = [
+    document.getElementById("unitList"),
+    document.getElementById("overviewUnits"),
+    document.getElementById("allUnits")
+  ];
 
-      return `
-        <div class="unit" onclick='selectUnit(${JSON.stringify(unit)})'>
+  const filtered = units.filter(unit => {
+    return currentFilter === "ALL" ||
+      unit.dept === currentFilter;
+  });
 
-          <span class="tag">● ACTIVE</span>
+  lists.forEach(list => {
 
-          <b>${unit[0]}</b>
+    if (!list) return;
 
-          <small>
-            ${unit[1]} · ${unit[2]}
-          </small>
+    list.innerHTML = "";
 
-          <div class="unit-mini">
+    filtered.forEach(unit => {
 
-            <span>◉ ${unit[6]}</span>
+      const element = document.createElement("div");
 
-            <span>${unit[7]} km/h</span>
+      element.className = "unit";
 
-          </div>
+      element.innerHTML = `
+        <div class="unit-icon">${unit.icon}</div>
 
+        <div class="unit-main">
+          <strong>${unit.dept} ${unit.name}</strong>
+          <span>${unit.vehicle} · ${unit.status}</span>
+        </div>
+
+        <div class="unit-speed">
+          ${unit.speed} km/h
         </div>
       `;
 
-    }).join("");
+      element.addEventListener("click", () => {
+        selectUnit(unit);
+        openPage("map");
+      });
 
+      list.appendChild(element);
+
+    });
+
+  });
+
+  document.getElementById("unitCount").textContent =
+    `${filtered.length} unit${filtered.length === 1 ? "" : "s"}`;
+
+  document.getElementById("statUnits").textContent =
+    units.length;
 }
 
+/* SELECT UNIT */
 
 function selectUnit(unit) {
 
   selectedUnit = unit;
 
-  document.getElementById("selectedName").textContent =
-    unit[0];
-
-  document.getElementById("selectedDepartment").textContent =
-    unit[1] + " • " + departmentName(unit[1]);
-
-  document.getElementById("selectedVehicle").textContent =
-    unit[2];
-
-  document.getElementById("selectedReg").textContent =
-    unit[3];
-
-  document.getElementById("selectedSpeed").textContent =
-    unit[7];
-
-  document.getElementById("selectedHeading").textContent =
-    unit[8];
-
-  document.getElementById("selectedAccel").textContent =
-    unit[9];
-
-  document.getElementById("selectedIcon").textContent =
-    unit[6];
-
-  document.getElementById("selectedLocation").textContent =
-    getLocation(unit[4], unit[5]);
-
   document.getElementById("selectedStatus").textContent =
-    unit[9] === "High" ? "ALERT" : "ACTIVE";
+    `${unit.dept} ${unit.name} · ${unit.status}`;
 
+  document.getElementById("unitDetails").innerHTML = `
+
+    <div class="details-grid">
+
+      <div class="detail">
+        <span>UNIT</span>
+        <strong>${unit.dept} ${unit.name}</strong>
+      </div>
+
+      <div class="detail">
+        <span>STATUS</span>
+        <strong>${unit.status}</strong>
+      </div>
+
+      <div class="detail">
+        <span>VEHICLE</span>
+        <strong>${unit.vehicle}</strong>
+      </div>
+
+      <div class="detail">
+        <span>REGISTRATION</span>
+        <strong>${unit.reg}</strong>
+      </div>
+
+      <div class="detail">
+        <span>SPEED</span>
+        <strong>${unit.speed} km/h</strong>
+      </div>
+
+      <div class="detail">
+        <span>HEADING</span>
+        <strong>${unit.heading}</strong>
+      </div>
+
+    </div>
+  `;
 }
 
+/* CALLS */
 
-function departmentName(department){
+function renderCalls() {
 
-  if(department === "NZP")
-    return "Police";
+  const targets = [
+    document.getElementById("overviewCalls"),
+    document.getElementById("dispatchCalls")
+  ];
 
-  if(department === "FENZ")
-    return "Fire & Emergency";
+  targets.forEach(target => {
 
-  if(department === "STJ")
-    return "St John";
+    if (!target) return;
 
-  if(department === "DOT")
-    return "Transport";
+    target.innerHTML = "";
 
-  return department;
+    calls.forEach(call => {
 
-}
+      const element = document.createElement("div");
 
+      element.className = "call";
 
-function getLocation(x,y){
+      element.innerHTML = `
+        <strong>${call.type}</strong>
+        <span>${call.location}</span>
+        <span>
+          Priority: ${call.priority} ·
+          ${call.units.join(", ")}
+        </span>
+      `;
 
-  if(x > 70 && y < 40)
-    return "Northern District";
+      target.appendChild(element);
 
-  if(x > 55 && y > 55)
-    return "Southern District";
-
-  if(x < 40 && y > 55)
-    return "Western District";
-
-  if(x < 40)
-    return "Central District";
-
-  return "Liberty County";
-
-}
-
-
-function roles(){
-
-  const department =
-    document.getElementById("dept").value;
-
-  document.getElementById("role").innerHTML =
-    rolesData[department]
-      .map(role => `<option>${role}</option>`)
-      .join("");
-
-}
-
-
-function openCase(){
-
-  document
-    .getElementById("modal")
-    .classList.remove("hidden");
-
-}
-
-
-function closeCase(){
-
-  document
-    .getElementById("modal")
-    .classList.add("hidden");
-
-}
-
-
-function tick(){
-
-  const now =
-    new Date().toLocaleTimeString([],{
-      hour:"2-digit",
-      minute:"2-digit",
-      second:"2-digit"
     });
 
-  document.getElementById("time").textContent = now;
+  });
 
-  document.getElementById("lastUpdate").textContent = now;
-
+  document.getElementById("statCalls").textContent =
+    calls.length;
 }
 
+/* CREATE CALL */
 
-function simulateTelemetry(){
+function createCall() {
+
+  const call = {
+    id: `CALL-${String(calls.length + 1).padStart(3, "0")}`,
+    type: "New Incident",
+    location: "Location Pending",
+    priority: "MEDIUM",
+    units: []
+  };
+
+  calls.push(call);
+
+  renderCalls();
+}
+
+/* SIMULATED TELEMETRY FOR NOW */
+
+function updateTelemetry() {
 
   units.forEach(unit => {
 
     const change =
-      Math.floor(Math.random() * 7) - 3;
+      Math.floor(Math.random() * 11) - 5;
 
-    unit[7] =
-      Math.max(0, unit[7] + change);
-
-    unit[4] += (Math.random() - 0.5) * 0.8;
-    unit[5] += (Math.random() - 0.5) * 0.8;
-
-    unit[4] = Math.max(5,Math.min(95,unit[4]));
-    unit[5] = Math.max(5,Math.min(90,unit[5]));
+    unit.speed = Math.max(
+      0,
+      unit.speed + change
+    );
 
   });
 
-  renderUnits();
-  draw();
+  renderMap();
+  renderUnitList();
 
-  if(selectedUnit){
-    const updated =
-      units.find(x => x[0] === selectedUnit[0]);
+  if (selectedUnit) {
+    const latest = units.find(
+      unit => unit.id === selectedUnit.id
+    );
 
-    if(updated){
-      selectUnit(updated);
+    if (latest) {
+      selectUnit(latest);
     }
   }
 
+  document.getElementById("mapUpdated").textContent =
+    `Updated ${new Date().toLocaleTimeString()}`;
 }
 
+/* START */
 
-document.getElementById("modal").onclick =
-  event => {
+renderMap();
+renderUnitList();
+renderCalls();
 
-    if(event.target.id === "modal"){
-      closeCase();
-    }
-
-  };
-
-
-renderUnits();
-draw();
-roles();
-tick();
-
-setInterval(tick,1000);
-
-setInterval(simulateTelemetry,5000);
+setInterval(updateTelemetry, 5000);
