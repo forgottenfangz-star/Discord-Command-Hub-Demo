@@ -1,24 +1,618 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ERLC Command Hub Demo</title><link rel="stylesheet" href="style.css"></head><body>
-<aside><div class="logo"><b>ERLC</b><small>COMMAND HUB</small></div><div class="profile">◉ Demo User<br><small>Management</small></div><nav>
-<button class="active" data-page="home">⌂ Overview</button><button data-page="operations">⌖ Live Operations</button><button data-page="departments">◈ Departments</button><button data-page="reports">▤ Reports & Dispatch</button><button data-page="applications">☷ Applications</button><button data-page="watchdog">◉ AI Watchdog <i>2</i></button><button data-page="management">⚙ Management</button>
-</nav><footer>● Server online<br><small>Demo environment</small></footer></aside>
-<main><header><div><small>COMMAND HUB / <span id="crumb">OVERVIEW</span></small><h1 id="title">Overview</h1></div><div id="time"></div></header>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ERLC Command Hub</title>
+<link rel="stylesheet" href="style.css">
+</head>
 
-<section id="home" class="page active"><div class="hero"><div><small>ER:LC OPERATIONS</small><h2>Good evening, Demo User.</h2><p>Everything your server needs in one place.</p></div><button class="primary" onclick="go('operations')">Open live operations →</button></div>
-<div class="stats"><div><small>Players online</small><strong>47</strong><em>↑ 8 today</em></div><div><small>Tracked units</small><strong>18</strong><em>4 departments</em></div><div><small>Open incidents</small><strong>6</strong><em>2 high priority</em></div><div><small>Watchdog alerts</small><strong>2</strong><em class="warn">Needs review</em></div></div>
-<div class="cols"><div class="panel"><h3>Department activity</h3><small>Current operational status</small><div class="list"><p><b>NZP</b><span>8 units active</span><em>ACTIVE</em></p><p><b>FENZ</b><span>4 units active</span><em>ACTIVE</em></p><p><b>St John</b><span>3 units active</span><em>ACTIVE</em></p><p><b>DOT</b><span>3 units active</span><em>ACTIVE</em></p></div></div><div class="panel"><h3>Recent activity</h3><small>Latest hub events</small><div class="events"><p><b>NZP 2A-21</b> entered Auckland CBD <small>1 min ago</small></p><p><b>Application #104</b> submitted <small>4 min ago</small></p><p><b>Watchdog #18</b> high-confidence case <small>8 min ago</small></p></div></div></div></section>
+<body>
 
-<section id="operations" class="page"><div class="op"><div class="panel"><div class="maphead"><div><h3>Live Operations</h3><small>Demo ER:LC map • simulated live data</small></div><div><button class="filter active" onclick="draw('ALL',this)">All</button><button class="filter" onclick="draw('NZP',this)">NZP</button><button class="filter" onclick="draw('FENZ',this)">FENZ</button><button class="filter" onclick="draw('STJ',this)">St John</button><button class="filter" onclick="draw('DOT',this)">DOT</button></div></div><div id="map"></div></div><div class="panel units"><h3>Active units</h3><small>Click for details</small><div id="units"></div></div></div></section>
+<aside>
+  <div class="logo">
+    <b>ERLC</b>
+    <small>COMMAND HUB</small>
+  </div>
 
-<section id="departments" class="page"><div class="deptgrid"><div><b>NZP</b><h2>New Zealand Police</h2><p>111 dispatch, reports, vehicles and units.</p><button>Open department →</button></div><div><b>FENZ</b><h2>Fire and Emergency</h2><p>Incidents, appliances, crews and dispatch.</p><button>Open department →</button></div><div><b>ST JOHN</b><h2>St John</h2><p>Ambulances, incidents, crews and dispatch.</p><button>Open department →</button></div><div><b>DOT</b><h2>Department of Transport</h2><p>Traffic incidents, units and vehicles.</p><button>Open department →</button></div></div></section>
+  <div class="profile">
+    ◉ Demo User<br>
+    <small>Management</small>
+  </div>
 
-<section id="reports" class="page"><div class="toolbar"><button class="primary">+ Make a report</button><button>111 Dispatch</button><input placeholder="Search reports..."></div><div class="panel"><h3>Reports & Dispatch</h3><small>Demo records</small><table><tr><th>CASE</th><th>TYPE</th><th>DEPARTMENT</th><th>STATUS</th></tr><tr><td>#1042</td><td>111 Dispatch</td><td>NZP</td><td class="green">OPEN</td></tr><tr><td>#1041</td><td>Incident report</td><td>FENZ</td><td class="blue">REVIEW</td></tr><tr><td>#1040</td><td>Traffic report</td><td>DOT</td><td class="green">OPEN</td></tr></table></div></section>
+  <nav>
+    <button class="active" data-page="home">⌂ Overview</button>
+    <button data-page="operations">⌖ Live Operations</button>
+    <button data-page="departments">◈ Departments</button>
+    <button data-page="reports">▤ Reports & Dispatch</button>
+    <button data-page="applications">☷ Applications</button>
+    <button data-page="watchdog">◉ AI Watchdog <i>2</i></button>
+    <button data-page="management">⚙ Management</button>
+  </nav>
 
-<section id="applications" class="page"><div class="cols"><div class="panel form"><h3>Apply to a department</h3><small>Select a department and position</small><label>Department<select id="dept" onchange="roles()"><option>NZP</option><option>FENZ</option><option>St John</option><option>DOT</option><option>Staff</option></select></label><label>Position<select id="role"></select></label><label>Application<textarea placeholder="Write your application..."></textarea></label><button class="primary" onclick="alert('Demo application submitted')">Submit application</button></div><div class="panel"><h3>My application</h3><small>Current status</small><div class="application"><b>#104</b><span>NZP · Sergeant</span><em>PENDING</em><small>Submitted today</small></div></div></div></section>
+  <footer>
+    ● Server online
+    <br>
+    <small>Demo environment</small>
+  </footer>
+</aside>
 
-<section id="watchdog" class="page"><div class="watch"><div><small>AI SECURITY MONITOR</small><h2>Watchdog</h2><p>AI reviews evidence before alerting on-duty staff.</p></div><b>● MONITORING</b></div><div class="stats"><div><small>Cases today</small><strong>18</strong></div><div><small>Confirmed</small><strong>3</strong></div><div><small>Uncertain</small><strong>2</strong></div><div><small>False alarms</small><strong>13</strong></div></div><div class="panel"><h3>Cases requiring attention</h3><small>AI verdicts are recommendations, not automatic bans</small><div class="case" onclick="openCase()"><em>HIGH</em><div><b>Watchdog #18 · ExamplePlayer</b><p>Suspected impossible position change • footage + telemetry</p></div><strong>CONFIRMED</strong><button>Review →</button></div><div class="case"><em>MED</em><div><b>Watchdog #17 · TestPlayer</b><p>Unusual movement • insufficient evidence</p></div><strong>UNCERTAIN</strong></div></div></section>
+<main>
 
-<section id="management" class="page"><div class="stats"><div><small>Pending applications</small><strong>7</strong></div><div><small>Staff on duty</small><strong>9</strong></div><div><small>Open reports</small><strong>14</strong></div><div><small>Audit events</small><strong>62</strong></div></div><div class="panel tools"><h3>Management tools</h3><button>Review applications</button><button>Manage staff</button><button>Audit logs</button><button>Role configuration</button><button>Department settings</button><button>Watchdog settings</button></div></section>
+<header>
+  <div>
+    <small>COMMAND HUB / <span id="crumb">OVERVIEW</span></small>
+    <h1 id="title">Overview</h1>
+  </div>
+  <div id="time"></div>
+</header>
+
+
+<!-- OVERVIEW -->
+
+<section id="home" class="page active">
+
+  <div class="hero">
+    <div>
+      <small>ER:LC OPERATIONS</small>
+      <h2>Good evening, Demo User.</h2>
+      <p>Everything your server needs in one place.</p>
+    </div>
+
+    <button class="primary" onclick="go('operations')">
+      Open live operations →
+    </button>
+  </div>
+
+  <div class="stats">
+    <div>
+      <small>Players online</small>
+      <strong>47</strong>
+      <em>↑ 8 today</em>
+    </div>
+
+    <div>
+      <small>Tracked units</small>
+      <strong id="trackedCount">8</strong>
+      <em>4 departments</em>
+    </div>
+
+    <div>
+      <small>Open incidents</small>
+      <strong>6</strong>
+      <em>2 high priority</em>
+    </div>
+
+    <div>
+      <small>Watchdog alerts</small>
+      <strong>2</strong>
+      <em class="warn">Needs review</em>
+    </div>
+  </div>
+
+  <div class="cols">
+
+    <div class="panel">
+      <h3>Department activity</h3>
+      <small>Current operational status</small>
+
+      <div class="list">
+        <p><b>NZP</b><span>8 units active</span><em>ACTIVE</em></p>
+        <p><b>FENZ</b><span>4 units active</span><em>ACTIVE</em></p>
+        <p><b>St John</b><span>3 units active</span><em>ACTIVE</em></p>
+        <p><b>DOT</b><span>3 units active</span><em>ACTIVE</em></p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Recent activity</h3>
+      <small>Latest hub events</small>
+
+      <div class="events">
+        <p><b>NZP 2A-21</b> entered Auckland CBD <small>1 min ago</small></p>
+        <p><b>Application #104</b> submitted <small>4 min ago</small></p>
+        <p><b>Watchdog #18</b> high-confidence case <small>8 min ago</small></p>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- LIVE OPERATIONS -->
+
+<section id="operations" class="page">
+
+  <div class="operation-layout">
+
+    <div class="map-panel panel">
+
+      <div class="map-top">
+
+        <div>
+          <h3>Live Operations</h3>
+          <small>ER:LC map • simulated live data</small>
+        </div>
+
+        <div class="map-controls">
+          <button class="filter active" onclick="draw('ALL',this)">All</button>
+          <button class="filter" onclick="draw('NZP',this)">NZP</button>
+          <button class="filter" onclick="draw('FENZ',this)">FENZ</button>
+          <button class="filter" onclick="draw('STJ',this)">St John</button>
+          <button class="filter" onclick="draw('DOT',this)">DOT</button>
+        </div>
+
+      </div>
+
+
+      <div class="map" id="map">
+
+        <div class="map-label label-one">LIBERTY COUNTY</div>
+        <div class="map-label label-two">CITY</div>
+        <div class="map-label label-three">HIGHWAY</div>
+
+      </div>
+
+
+      <div class="map-status">
+
+        <span>
+          <i class="online-dot"></i>
+          LIVE CONNECTION
+        </span>
+
+        <span>
+          Units: <b id="mapUnitCount">8</b>
+        </span>
+
+        <span>
+          Update: <b id="lastUpdate">Now</b>
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- UNIT LIST -->
+
+    <div class="panel units">
+
+      <div class="unit-header">
+        <div>
+          <h3>Active units</h3>
+          <small>Live tracking</small>
+        </div>
+
+        <span class="live-pill">LIVE</span>
+      </div>
+
+      <div id="units"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- TRACKING PANEL -->
+
+  <div class="tracking-grid">
+
+    <div class="panel">
+
+      <div class="panel-heading">
+        <div>
+          <h3>Selected Unit</h3>
+          <small>Live telemetry</small>
+        </div>
+
+        <span id="selectedStatus" class="status-good">
+          ACTIVE
+        </span>
+      </div>
+
+      <div class="selected-unit">
+
+        <div class="selected-icon" id="selectedIcon">🚓</div>
+
+        <div>
+          <strong id="selectedName">NZP 2A-21</strong>
+          <small id="selectedDepartment">NZP • Police</small>
+        </div>
+
+      </div>
+
+      <div class="telemetry">
+
+        <div>
+          <small>Vehicle</small>
+          <b id="selectedVehicle">Ford Explorer</b>
+        </div>
+
+        <div>
+          <small>Registration</small>
+          <b id="selectedReg">NZP-201</b>
+        </div>
+
+        <div>
+          <small>Speed</small>
+          <b><span id="selectedSpeed">82</span> km/h</b>
+        </div>
+
+        <div>
+          <small>Heading</small>
+          <b id="selectedHeading">North</b>
+        </div>
+
+        <div>
+          <small>Acceleration</small>
+          <b id="selectedAccel">Normal</b>
+        </div>
+
+        <div>
+          <small>Location</small>
+          <b id="selectedLocation">Liberty County</b>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- INCIDENTS -->
+
+    <div class="panel">
+
+      <div class="panel-heading">
+        <div>
+          <h3>Active incidents</h3>
+          <small>Current dispatch activity</small>
+        </div>
+
+        <span class="incident-count">3</span>
+      </div>
+
+      <div class="incident">
+        <span class="incident-priority high">HIGH</span>
+        <div>
+          <b>Traffic collision</b>
+          <small>Highway 1</small>
+        </div>
+        <strong>NZP · FENZ</strong>
+      </div>
+
+      <div class="incident">
+        <span class="incident-priority med">MED</span>
+        <div>
+          <b>Medical emergency</b>
+          <small>Liberty Avenue</small>
+        </div>
+        <strong>ST JOHN</strong>
+      </div>
+
+      <div class="incident">
+        <span class="incident-priority low">LOW</span>
+        <div>
+          <b>Road obstruction</b>
+          <small>Downtown</small>
+        </div>
+        <strong>DOT</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- DEPARTMENTS -->
+
+<section id="departments" class="page">
+
+  <div class="deptgrid">
+
+    <div>
+      <b>NZP</b>
+      <h2>New Zealand Police</h2>
+      <p>111 dispatch, reports, vehicles and units.</p>
+      <button>Open department →</button>
+    </div>
+
+    <div>
+      <b>FENZ</b>
+      <h2>Fire and Emergency</h2>
+      <p>Incidents, appliances, crews and dispatch.</p>
+      <button>Open department →</button>
+    </div>
+
+    <div>
+      <b>ST JOHN</b>
+      <h2>St John</h2>
+      <p>Ambulances, incidents, crews and dispatch.</p>
+      <button>Open department →</button>
+    </div>
+
+    <div>
+      <b>DOT</b>
+      <h2>Department of Transport</h2>
+      <p>Traffic incidents, units and vehicles.</p>
+      <button>Open department →</button>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- REPORTS -->
+
+<section id="reports" class="page">
+
+  <div class="toolbar">
+    <button class="primary">+ Make a report</button>
+    <button>111 Dispatch</button>
+    <input placeholder="Search reports...">
+  </div>
+
+  <div class="panel">
+
+    <h3>Reports & Dispatch</h3>
+    <small>Demo records</small>
+
+    <table>
+
+      <tr>
+        <th>CASE</th>
+        <th>TYPE</th>
+        <th>DEPARTMENT</th>
+        <th>STATUS</th>
+      </tr>
+
+      <tr>
+        <td>#1042</td>
+        <td>111 Dispatch</td>
+        <td>NZP</td>
+        <td class="green">OPEN</td>
+      </tr>
+
+      <tr>
+        <td>#1041</td>
+        <td>Incident report</td>
+        <td>FENZ</td>
+        <td class="blue">REVIEW</td>
+      </tr>
+
+      <tr>
+        <td>#1040</td>
+        <td>Traffic report</td>
+        <td>DOT</td>
+        <td class="green">OPEN</td>
+      </tr>
+
+    </table>
+
+  </div>
+
+</section>
+
+
+<!-- APPLICATIONS -->
+
+<section id="applications" class="page">
+
+  <div class="cols">
+
+    <div class="panel form">
+
+      <h3>Apply to a department</h3>
+      <small>Select a department and position</small>
+
+      <label>
+        Department
+
+        <select id="dept" onchange="roles()">
+          <option>NZP</option>
+          <option>FENZ</option>
+          <option>St John</option>
+          <option>DOT</option>
+          <option>Staff</option>
+        </select>
+
+      </label>
+
+      <label>
+        Position
+        <select id="role"></select>
+      </label>
+
+      <label>
+        Application
+        <textarea placeholder="Write your application..."></textarea>
+      </label>
+
+      <button class="primary" onclick="alert('Demo application submitted')">
+        Submit application
+      </button>
+
+    </div>
+
+
+    <div class="panel">
+
+      <h3>My application</h3>
+      <small>Current status</small>
+
+      <div class="application">
+        <b>#104</b>
+        <span>NZP · Sergeant</span>
+        <em>PENDING</em>
+        <small>Submitted today</small>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- WATCHDOG -->
+
+<section id="watchdog" class="page">
+
+  <div class="watch">
+
+    <div>
+      <small>AI SECURITY MONITOR</small>
+      <h2>Watchdog</h2>
+      <p>AI reviews evidence before alerting on-duty staff.</p>
+    </div>
+
+    <b>● MONITORING</b>
+
+  </div>
+
+  <div class="stats">
+
+    <div>
+      <small>Cases today</small>
+      <strong>18</strong>
+    </div>
+
+    <div>
+      <small>Confirmed</small>
+      <strong>3</strong>
+    </div>
+
+    <div>
+      <small>Uncertain</small>
+      <strong>2</strong>
+    </div>
+
+    <div>
+      <small>False alarms</small>
+      <strong>13</strong>
+    </div>
+
+  </div>
+
+  <div class="panel">
+
+    <h3>Cases requiring attention</h3>
+    <small>AI verdicts are recommendations, not automatic bans</small>
+
+    <div class="case" onclick="openCase()">
+
+      <em>HIGH</em>
+
+      <div>
+        <b>Watchdog #18 · ExamplePlayer</b>
+        <p>Suspected impossible position change • footage + telemetry</p>
+      </div>
+
+      <strong>CONFIRMED</strong>
+
+      <button>Review →</button>
+
+    </div>
+
+    <div class="case">
+
+      <em>MED</em>
+
+      <div>
+        <b>Watchdog #17 · TestPlayer</b>
+        <p>Unusual movement • insufficient evidence</p>
+      </div>
+
+      <strong>UNCERTAIN</strong>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- MANAGEMENT -->
+
+<section id="management" class="page">
+
+  <div class="stats">
+
+    <div>
+      <small>Pending applications</small>
+      <strong>7</strong>
+    </div>
+
+    <div>
+      <small>Staff on duty</small>
+      <strong>9</strong>
+    </div>
+
+    <div>
+      <small>Open reports</small>
+      <strong>14</strong>
+    </div>
+
+    <div>
+      <small>Audit events</small>
+      <strong>62</strong>
+    </div>
+
+  </div>
+
+  <div class="panel tools">
+
+    <h3>Management tools</h3>
+
+    <button>Review applications</button>
+    <button>Manage staff</button>
+    <button>Audit logs</button>
+    <button>Role configuration</button>
+    <button>Department settings</button>
+    <button>Watchdog settings</button>
+
+  </div>
+
+</section>
+
 </main>
-<div id="modal" class="modal hidden"><div><button class="x" onclick="closeCase()">×</button><small>WATCHDOG CASE #18</small><h2>ExamplePlayer</h2><div class="verdict">✓ AI VERDICT: HIGH CONFIDENCE</div><p><b>Detection:</b> Impossible position change</p><p><b>Evidence:</b> Footage + server telemetry</p><p><b>Action:</b> Alert on-duty staff</p><p><b>Ban:</b> Human confirmation required</p><button class="primary" onclick="alert('Demo: on-duty staff notified')">Notify on-duty staff</button></div></div>
-<script src="app.js"></script></body></html>
+
+
+<!-- WATCHDOG MODAL -->
+
+<div id="modal" class="modal hidden">
+
+  <div>
+
+    <button class="x" onclick="closeCase()">×</button>
+
+    <small>WATCHDOG CASE #18</small>
+
+    <h2>ExamplePlayer</h2>
+
+    <div class="verdict">
+      ✓ AI VERDICT: HIGH CONFIDENCE
+    </div>
+
+    <p><b>Detection:</b> Impossible position change</p>
+    <p><b>Evidence:</b> Footage + server telemetry</p>
+    <p><b>Action:</b> Alert on-duty staff</p>
+    <p><b>Ban:</b> Human confirmation required</p>
+
+    <button class="primary" onclick="alert('Demo: on-duty staff notified')">
+      Notify on-duty staff
+    </button>
+
+  </div>
+
+</div>
+
+
+<script src="app.js"></script>
+
+</body>
+</html>
