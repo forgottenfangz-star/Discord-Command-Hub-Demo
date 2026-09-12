@@ -1,116 +1,28 @@
-const units = [
-  {
-    id: "NZP-21",
-    dept: "NZP",
-    name: "2A-21",
-    vehicle: "Ford Explorer",
-    reg: "NZP-201",
-    speed: 82,
-    heading: "North",
-    x: 32,
-    y: 38,
-    icon: "🚓",
-    status: "Available"
-  },
-  {
-    id: "NZP-17",
-    dept: "NZP",
-    name: "4A-17",
-    vehicle: "BMW M5",
-    reg: "NZP-417",
-    speed: 64,
-    heading: "East",
-    x: 58,
-    y: 30,
-    icon: "🚓",
-    status: "En Route"
-  },
-  {
-    id: "FENZ-12",
-    dept: "FENZ",
-    name: "12",
-    vehicle: "Scania P-Series",
-    reg: "FENZ-12",
-    speed: 51,
-    heading: "South",
-    x: 72,
-    y: 62,
-    icon: "🚒",
-    status: "Available"
-  },
-  {
-    id: "STJ-104",
-    dept: "STJ",
-    name: "104",
-    vehicle: "Mercedes Sprinter",
-    reg: "STJ-104",
-    speed: 58,
-    heading: "West",
-    x: 44,
-    y: 68,
-    icon: "🚑",
-    status: "On Scene"
-  },
-  {
-    id: "DOT-88",
-    dept: "DOT",
-    name: "88",
-    vehicle: "Toyota Hilux",
-    reg: "DOT-88",
-    speed: 43,
-    heading: "North",
-    x: 20,
-    y: 72,
-    icon: "🚧",
-    status: "Available"
-  }
-];
+/*
+    ERLC COMMAND HUB
 
-let calls = [
-  {
-    id: "CALL-001",
-    type: "Traffic Collision",
-    location: "Liberty County Highway",
-    priority: "HIGH",
-    units: ["NZP-17", "STJ-104"]
-  },
-  {
-    id: "CALL-002",
-    type: "Structure Fire",
-    location: "Central Liberty County",
-    priority: "CRITICAL",
-    units: ["FENZ-12"]
-  }
-];
+    Current version:
+    - Information-based Overview
+    - GSRP-inspired dashboard layout
+    - Navigation system
+    - Dispatch placeholder
+    - Live Map placeholder
+    - Unit placeholder
 
-let selectedUnit = null;
-let currentFilter = "ALL";
+    IMPORTANT:
+    The ER:LC API is NOT connected yet.
 
-/* NAVIGATION */
+    The next backend stage can replace the placeholder
+    data with real ER:LC server information.
+*/
 
-function openPage(page) {
 
-  document.querySelectorAll(".page").forEach(section => {
-    section.classList.remove("active");
-  });
+/* ================= PAGE NAVIGATION ================= */
 
-  document.querySelectorAll(".nav").forEach(button => {
-    button.classList.remove("active");
-  });
+const navItems = document.querySelectorAll(".nav-item");
+const pages = document.querySelectorAll(".page");
 
-  const target = document.getElementById(page);
-
-  if (target) {
-    target.classList.add("active");
-  }
-
-  const nav = document.querySelector(`[data-page="${page}"]`);
-
-  if (nav) {
-    nav.classList.add("active");
-  }
-
-  const titles = {
+const pageTitles = {
     overview: "Overview",
     map: "Live Map",
     dispatch: "Dispatch",
@@ -118,277 +30,434 @@ function openPage(page) {
     departments: "Departments",
     reports: "Reports",
     applications: "Applications",
-    watchdog: "AI Watchdog",
+    watchdog: "Watchdog",
     management: "Management"
-  };
+};
 
-  document.getElementById("pageTitle").textContent =
-    titles[page] || "Command Hub";
+
+function openPage(pageName) {
+
+    pages.forEach(page => {
+        page.classList.remove("active");
+    });
+
+    navItems.forEach(item => {
+        item.classList.remove("active");
+    });
+
+
+    const selectedPage =
+        document.getElementById(`page-${pageName}`);
+
+    const selectedNav =
+        document.querySelector(
+            `.nav-item[data-page="${pageName}"]`
+        );
+
+
+    if (selectedPage) {
+        selectedPage.classList.add("active");
+    }
+
+    if (selectedNav) {
+        selectedNav.classList.add("active");
+    }
+
+
+    const title =
+        pageTitles[pageName] || "Overview";
+
+
+    const titleElement =
+        document.getElementById("pageTitle");
+
+    const breadcrumb =
+        document.getElementById("breadcrumbPage");
+
+
+    if (titleElement) {
+        titleElement.textContent = title;
+    }
+
+    if (breadcrumb) {
+        breadcrumb.textContent =
+            title.toUpperCase();
+    }
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
 
-document.querySelectorAll(".nav").forEach(button => {
 
-  button.addEventListener("click", () => {
-    openPage(button.dataset.page);
-  });
+navItems.forEach(item => {
+
+    item.addEventListener("click", () => {
+
+        const page =
+            item.dataset.page;
+
+        openPage(page);
+
+    });
 
 });
 
-/* FILTERS */
 
-document.querySelectorAll(".filter").forEach(button => {
+/* ================= INTERNAL BUTTONS ================= */
 
-  button.addEventListener("click", () => {
+document.querySelectorAll("[data-page-target]")
+    .forEach(button => {
 
-    document.querySelectorAll(".filter").forEach(b => {
-      b.classList.remove("active");
+        button.addEventListener("click", () => {
+
+            const page =
+                button.dataset.pageTarget;
+
+            openPage(page);
+
+        });
+
     });
 
-    button.classList.add("active");
 
-    currentFilter = button.dataset.filter;
 
-    renderMap();
-    renderUnitList();
-  });
+/* ================= MAP FILTERS ================= */
+
+const mapFilters =
+    document.querySelectorAll(".map-filter");
+
+
+mapFilters.forEach(filter => {
+
+    filter.addEventListener("click", () => {
+
+        mapFilters.forEach(button => {
+            button.classList.remove("active");
+        });
+
+        filter.classList.add("active");
+
+        const department =
+            filter.dataset.filter;
+
+        console.log(
+            `Map filter selected: ${department}`
+        );
+
+        /*
+            When the real ER:LC API is connected,
+            this filter will show/hide live units
+            belonging to the selected department.
+        */
+    });
 
 });
 
-/* MAP */
 
-function renderMap() {
 
-  const container = document.getElementById("markers");
+/* ================= CURRENT UNIT SYSTEM ================= */
 
-  container.innerHTML = "";
+/*
+    There is intentionally NO fake unit data here.
 
-  const filtered = units.filter(unit => {
-    return currentFilter === "ALL" ||
-      unit.dept === currentFilter;
-  });
+    When the API is connected, the backend can return
+    live units and this function can render them.
+*/
 
-  filtered.forEach(unit => {
 
-    const marker = document.createElement("button");
+const unitList =
+    document.getElementById("unitList");
 
-    marker.className = `marker ${unit.dept}`;
+const fullUnitList =
+    document.getElementById("fullUnitList");
 
-    marker.style.left = `${unit.x}%`;
-    marker.style.top = `${unit.y}%`;
+const unitCount =
+    document.getElementById("unitCount");
 
-    marker.innerHTML = unit.icon;
 
-    marker.title = `${unit.dept} ${unit.name}`;
+function renderUnits(units) {
 
-    marker.addEventListener("click", () => {
-      selectUnit(unit);
-    });
+    if (!Array.isArray(units)) {
+        units = [];
+    }
 
-    container.appendChild(marker);
 
-  });
+    if (unitCount) {
+        unitCount.textContent =
+            units.length;
+    }
+
+
+    if (units.length === 0) {
+
+        if (unitList) {
+
+            unitList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">◉</div>
+
+                    <h4>No live units detected</h4>
+
+                    <p>
+                        Units will appear automatically
+                        when the ER:LC API is connected.
+                    </p>
+                </div>
+            `;
+
+        }
+
+
+        if (fullUnitList) {
+
+            fullUnitList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">▣</div>
+
+                    <h4>No live units detected</h4>
+
+                    <p>
+                        Live ER:LC unit information will
+                        appear here automatically.
+                    </p>
+                </div>
+            `;
+
+        }
+
+        return;
+    }
+
+
+    /* ================= SMALL UNIT LIST ================= */
+
+    if (unitList) {
+
+        unitList.innerHTML = "";
+
+        units.forEach(unit => {
+
+            const element =
+                document.createElement("div");
+
+            element.className =
+                "unit-entry";
+
+            element.innerHTML = `
+                <div>
+                    <strong>
+                        ${escapeHTML(unit.callsign || "UNIT")}
+                    </strong>
+
+                    <small>
+                        ${escapeHTML(unit.department || "Unknown")}
+                    </small>
+                </div>
+
+                <span>
+                    ${escapeHTML(unit.status || "Available")}
+                </span>
+            `;
+
+            unitList.appendChild(element);
+
+        });
+
+    }
+
+
+    /* ================= FULL UNIT LIST ================= */
+
+    if (fullUnitList) {
+
+        fullUnitList.innerHTML = "";
+
+        units.forEach(unit => {
+
+            const element =
+                document.createElement("div");
+
+            element.className =
+                "unit-entry";
+
+            element.innerHTML = `
+                <div>
+                    <strong>
+                        ${escapeHTML(unit.callsign || "UNIT")}
+                    </strong>
+
+                    <small>
+                        ${escapeHTML(unit.department || "Unknown")}
+                    </small>
+                </div>
+
+                <span>
+                    ${escapeHTML(unit.status || "Available")}
+                </span>
+            `;
+
+            fullUnitList.appendChild(element);
+
+        });
+
+    }
 
 }
 
-/* UNIT LIST */
 
-function renderUnitList() {
 
-  const lists = [
-    document.getElementById("unitList"),
-    document.getElementById("overviewUnits"),
-    document.getElementById("allUnits")
-  ];
+/* ================= DISPATCH ================= */
 
-  const filtered = units.filter(unit => {
-    return currentFilter === "ALL" ||
-      unit.dept === currentFilter;
-  });
+/*
+    Dispatch intentionally contains NO
+    "Create New Call" function.
 
-  lists.forEach(list => {
+    Calls are supposed to come from ER:LC.
 
-    if (!list) return;
+    The future API response can be passed into:
 
-    list.innerHTML = "";
+        renderCalls(calls)
+*/
 
-    filtered.forEach(unit => {
 
-      const element = document.createElement("div");
+const callsList =
+    document.getElementById("callsList");
 
-      element.className = "unit";
 
-      element.innerHTML = `
-        <div class="unit-icon">${unit.icon}</div>
+function renderCalls(calls) {
 
-        <div class="unit-main">
-          <strong>${unit.dept} ${unit.name}</strong>
-          <span>${unit.vehicle} · ${unit.status}</span>
-        </div>
+    if (!callsList) {
+        return;
+    }
 
-        <div class="unit-speed">
-          ${unit.speed} km/h
-        </div>
-      `;
 
-      element.addEventListener("click", () => {
-        selectUnit(unit);
-        openPage("map");
-      });
+    if (!Array.isArray(calls) || calls.length === 0) {
 
-      list.appendChild(element);
+        callsList.innerHTML = `
+            <div class="empty-state">
 
-    });
+                <div class="empty-icon">☷</div>
 
-  });
+                <h4>No active calls</h4>
 
-  document.getElementById("unitCount").textContent =
-    `${filtered.length} unit${filtered.length === 1 ? "" : "s"}`;
+                <p>
+                    Emergency calls detected in ER:LC
+                    will automatically appear here.
+                </p>
 
-  document.getElementById("statUnits").textContent =
-    units.length;
-}
+            </div>
+        `;
 
-/* SELECT UNIT */
+        return;
+    }
 
-function selectUnit(unit) {
 
-  selectedUnit = unit;
+    callsList.innerHTML = "";
 
-  document.getElementById("selectedStatus").textContent =
-    `${unit.dept} ${unit.name} · ${unit.status}`;
-
-  document.getElementById("unitDetails").innerHTML = `
-
-    <div class="details-grid">
-
-      <div class="detail">
-        <span>UNIT</span>
-        <strong>${unit.dept} ${unit.name}</strong>
-      </div>
-
-      <div class="detail">
-        <span>STATUS</span>
-        <strong>${unit.status}</strong>
-      </div>
-
-      <div class="detail">
-        <span>VEHICLE</span>
-        <strong>${unit.vehicle}</strong>
-      </div>
-
-      <div class="detail">
-        <span>REGISTRATION</span>
-        <strong>${unit.reg}</strong>
-      </div>
-
-      <div class="detail">
-        <span>SPEED</span>
-        <strong>${unit.speed} km/h</strong>
-      </div>
-
-      <div class="detail">
-        <span>HEADING</span>
-        <strong>${unit.heading}</strong>
-      </div>
-
-    </div>
-  `;
-}
-
-/* CALLS */
-
-function renderCalls() {
-
-  const targets = [
-    document.getElementById("overviewCalls"),
-    document.getElementById("dispatchCalls")
-  ];
-
-  targets.forEach(target => {
-
-    if (!target) return;
-
-    target.innerHTML = "";
 
     calls.forEach(call => {
 
-      const element = document.createElement("div");
+        const element =
+            document.createElement("div");
 
-      element.className = "call";
+        element.className =
+            "call-entry";
 
-      element.innerHTML = `
-        <strong>${call.type}</strong>
-        <span>${call.location}</span>
-        <span>
-          Priority: ${call.priority} ·
-          ${call.units.join(", ")}
-        </span>
-      `;
 
-      target.appendChild(element);
+        element.innerHTML = `
+            <div>
+                <strong>
+                    ${escapeHTML(call.type || "Emergency Call")}
+                </strong>
+
+                <small>
+                    ${escapeHTML(call.location || "Unknown location")}
+                </small>
+            </div>
+
+            <div>
+                <span>
+                    ${escapeHTML(call.priority || "NORMAL")}
+                </span>
+            </div>
+        `;
+
+
+        callsList.appendChild(element);
 
     });
 
-  });
-
-  document.getElementById("statCalls").textContent =
-    calls.length;
 }
 
-/* CREATE CALL */
 
-function createCall() {
 
-  const call = {
-    id: `CALL-${String(calls.length + 1).padStart(3, "0")}`,
-    type: "New Incident",
-    location: "Location Pending",
-    priority: "MEDIUM",
-    units: []
-  };
+/* ================= SECURITY ================= */
 
-  calls.push(call);
+/*
+    Escape API data before inserting it
+    into HTML.
 
-  renderCalls();
+    This becomes important once live data
+    starts coming from external services.
+*/
+
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
 }
 
-/* SIMULATED TELEMETRY FOR NOW */
 
-function updateTelemetry() {
 
-  units.forEach(unit => {
+/* ================= INITIAL STATE ================= */
 
-    const change =
-      Math.floor(Math.random() * 11) - 5;
+/*
+    Start with no fake calls and no fake units.
+*/
 
-    unit.speed = Math.max(
-      0,
-      unit.speed + change
-    );
+renderUnits([]);
 
-  });
+renderCalls([]);
 
-  renderMap();
-  renderUnitList();
 
-  if (selectedUnit) {
-    const latest = units.find(
-      unit => unit.id === selectedUnit.id
-    );
 
-    if (latest) {
-      selectUnit(latest);
-    }
-  }
+/* ================= API CONNECTION PLACEHOLDER ================= */
 
-  document.getElementById("mapUpdated").textContent =
-    `Updated ${new Date().toLocaleTimeString()}`;
-}
+/*
+    FUTURE:
 
-/* START */
+    Instead of fake data, the frontend will call
+    a secure Vercel backend endpoint.
 
-renderMap();
-renderUnitList();
-renderCalls();
+    Example:
 
-setInterval(updateTelemetry, 5000);
+        fetch("/api/erlc")
+            .then(response => response.json())
+            .then(data => {
+
+                renderUnits(data.units);
+                renderCalls(data.calls);
+
+            });
+
+    The ER:LC server key must NEVER be placed
+    inside this frontend JavaScript file.
+*/
+
+
+console.log(
+    "ERLC Command Hub loaded successfully."
+);
+
+console.log(
+    "Waiting for secure ER:LC API connection."
+);

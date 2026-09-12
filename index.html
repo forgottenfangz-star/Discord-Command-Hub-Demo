@@ -1,402 +1,976 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ERLC Command Hub</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ERLC Command Hub</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div class="app">
 
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="brand-icon">EH</div>
-      <div>
-        <strong>ERLC</strong>
-        <span>COMMAND HUB</span>
-      </div>
-    </div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
 
-    <div class="server-status">
-      <span class="status-dot"></span>
-      System Online
-    </div>
+        <div class="brand">
+            <div class="brand-mark">E</div>
 
-    <nav>
-      <p class="nav-title">COMMAND</p>
-      <button class="nav active" data-page="overview">⌂ Overview</button>
-      <button class="nav" data-page="map">◎ Live Map</button>
-      <button class="nav" data-page="dispatch">◉ Dispatch</button>
-      <button class="nav" data-page="units">▣ Units</button>
-
-      <p class="nav-title">OPERATIONS</p>
-      <button class="nav" data-page="departments">▤ Departments</button>
-      <button class="nav" data-page="reports">▥ Reports</button>
-      <button class="nav" data-page="applications">□ Applications</button>
-
-      <p class="nav-title">ADMINISTRATION</p>
-      <button class="nav" data-page="watchdog">⚠ Watchdog</button>
-      <button class="nav" data-page="management">⚙ Management</button>
-    </nav>
-
-    <div class="user-card">
-      <div class="avatar">A</div>
-      <div>
-        <strong>Command Staff</strong>
-        <span>Administrator</span>
-      </div>
-    </div>
-  </aside>
-
-  <main class="main">
-
-    <header class="topbar">
-      <div>
-        <h1 id="pageTitle">Overview</h1>
-        <p>Emergency Response: Liberty County</p>
-      </div>
-
-      <div class="top-actions">
-        <span class="connection">
-          <span class="status-dot"></span>
-          API READY
-        </span>
-        <button class="profile">Command Staff ▾</button>
-      </div>
-    </header>
-
-    <!-- OVERVIEW -->
-    <section class="page active" id="overview">
-
-      <div class="welcome">
-        <div>
-          <h2>Command Overview</h2>
-          <p>Monitor your ERLC operation from one place.</p>
-        </div>
-        <button class="primary" onclick="openPage('map')">Open Live Map</button>
-      </div>
-
-      <div class="stats">
-        <div class="stat">
-          <span>ACTIVE UNITS</span>
-          <strong id="statUnits">0</strong>
-          <small>Currently connected</small>
-        </div>
-
-        <div class="stat">
-          <span>OPEN CALLS</span>
-          <strong id="statCalls">0</strong>
-          <small>Awaiting resolution</small>
-        </div>
-
-        <div class="stat">
-          <span>DEPARTMENTS</span>
-          <strong>4</strong>
-          <small>NZP · FENZ · STJ · DOT</small>
-        </div>
-
-        <div class="stat">
-          <span>SYSTEM</span>
-          <strong class="green">ONLINE</strong>
-          <small>All services operational</small>
-        </div>
-      </div>
-
-      <div class="grid-two">
-
-        <div class="panel">
-          <div class="panel-head">
             <div>
-              <h3>Live Operations</h3>
-              <span>Current unit activity</span>
+                <h1>ERLC</h1>
+                <span>COMMAND HUB</span>
             </div>
-            <button onclick="openPage('map')">View Map →</button>
-          </div>
-
-          <div id="overviewUnits" class="unit-list"></div>
         </div>
 
-        <div class="panel">
-          <div class="panel-head">
+        <div class="system-status">
+            <span class="status-dot"></span>
+            System Online
+        </div>
+
+        <div class="nav-title">COMMAND</div>
+
+        <nav>
+
+            <button class="nav-item active" data-page="overview">
+                <span>⌂</span>
+                Overview
+            </button>
+
+            <button class="nav-item" data-page="map">
+                <span>◉</span>
+                Live Map
+            </button>
+
+            <button class="nav-item" data-page="dispatch">
+                <span>☷</span>
+                Dispatch
+            </button>
+
+            <button class="nav-item" data-page="units">
+                <span>▣</span>
+                Units
+            </button>
+
+            <button class="nav-item" data-page="departments">
+                <span>◆</span>
+                Departments
+            </button>
+
+            <div class="nav-title">ADMINISTRATION</div>
+
+            <button class="nav-item" data-page="reports">
+                <span>▤</span>
+                Reports
+            </button>
+
+            <button class="nav-item" data-page="applications">
+                <span>□</span>
+                Applications
+            </button>
+
+            <button class="nav-item" data-page="watchdog">
+                <span>◌</span>
+                Watchdog
+            </button>
+
+            <button class="nav-item" data-page="management">
+                <span>⚙</span>
+                Management
+            </button>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="server-mini">
+
+                <div class="server-mini-icon">NZ</div>
+
+                <div>
+                    <strong>Liberty County</strong>
+                    <small>ER:LC Server</small>
+                </div>
+
+            </div>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+
             <div>
-              <h3>Active Calls</h3>
-              <span>Current dispatch activity</span>
-            </div>
-            <button onclick="openPage('dispatch')">Dispatch →</button>
-          </div>
-
-          <div id="overviewCalls"></div>
-        </div>
-
-      </div>
-
-    </section>
-
-    <!-- MAP -->
-    <section class="page" id="map">
-
-      <div class="page-heading">
-        <div>
-          <h2>Live Operations Map</h2>
-          <p>Liberty County operational overview</p>
-        </div>
-
-        <div class="filters">
-          <button class="filter active" data-filter="ALL">ALL</button>
-          <button class="filter" data-filter="NZP">NZP</button>
-          <button class="filter" data-filter="FENZ">FENZ</button>
-          <button class="filter" data-filter="STJ">ST JOHN</button>
-          <button class="filter" data-filter="DOT">DOT</button>
-        </div>
-      </div>
-
-      <div class="operations-layout">
-
-        <div class="map-wrapper">
-          <div class="map-toolbar">
-            <span><i></i> LIVE MAP</span>
-            <span id="mapUpdated">Updating...</span>
-          </div>
-
-          <div class="real-map" id="realMap">
-            <div class="map-overlay">
-              <strong>LIBERTY COUNTY</strong>
-              <span>LIVE OPERATIONS</span>
+                <div class="breadcrumb">COMMAND HUB / <span id="breadcrumbPage">OVERVIEW</span></div>
+                <h2 id="pageTitle">Overview</h2>
             </div>
 
-            <div id="markers"></div>
-          </div>
-        </div>
+            <div class="topbar-right">
 
-        <aside class="map-side">
+                <div class="connection">
+                    <span class="status-dot"></span>
+                    <span>API READY</span>
+                </div>
 
-          <div class="panel">
-            <div class="panel-head">
-              <div>
-                <h3>Active Units</h3>
-                <span id="unitCount">0 units</span>
-              </div>
+                <div class="profile">
+                    <div class="profile-avatar">U</div>
+
+                    <div>
+                        <strong>Command Staff</strong>
+                        <small>Administrator</small>
+                    </div>
+                </div>
+
             </div>
 
-            <div id="unitList" class="unit-list"></div>
-          </div>
+        </header>
 
-          <div class="panel selected-unit">
-            <div class="panel-head">
-              <div>
-                <h3>Selected Unit</h3>
-                <span id="selectedStatus">No unit selected</span>
-              </div>
+
+        <!-- CONTENT -->
+        <section class="content">
+
+
+            <!-- ================= OVERVIEW ================= -->
+
+            <div class="page active" id="page-overview">
+
+                <section class="welcome">
+
+                    <div>
+                        <div class="eyebrow">WELCOME TO THE COMMAND HUB</div>
+
+                        <h1>
+                            ERLC Command Hub
+                        </h1>
+
+                        <p>
+                            The central information and operations platform for
+                            our Liberty County emergency services community.
+                        </p>
+                    </div>
+
+                    <div class="welcome-badge">
+                        <span class="status-dot"></span>
+                        SERVER ONLINE
+                    </div>
+
+                </section>
+
+
+                <!-- ABOUT -->
+
+                <section class="info-section">
+
+                    <div class="section-heading">
+                        <div>
+                            <span class="section-label">01</span>
+                            <h3>About the Server</h3>
+                        </div>
+                    </div>
+
+                    <div class="information-card">
+
+                        <h4>Our Community</h4>
+
+                        <p>
+                            ERLC Command Hub is the central platform for
+                            managing and coordinating our Emergency Response:
+                            Liberty County community.
+                        </p>
+
+                        <p>
+                            Our goal is to provide an organised, professional
+                            and enjoyable roleplay environment where emergency
+                            services can operate together effectively.
+                        </p>
+
+                        <p>
+                            This hub provides members and staff with access to
+                            important server information, departments,
+                            applications, reports and live operational tools.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- SERVER INFORMATION -->
+
+                <section class="info-section">
+
+                    <div class="section-heading">
+                        <div>
+                            <span class="section-label">02</span>
+                            <h3>Server Information</h3>
+                        </div>
+                    </div>
+
+                    <div class="information-grid">
+
+                        <div class="information-item">
+                            <span>SERVER</span>
+                            <strong>Liberty County</strong>
+                            <small>Emergency Response: Liberty County</small>
+                        </div>
+
+                        <div class="information-item">
+                            <span>REGION</span>
+                            <strong>New Zealand</strong>
+                            <small>NZ-based community</small>
+                        </div>
+
+                        <div class="information-item">
+                            <span>PLATFORM</span>
+                            <strong>Roblox</strong>
+                            <small>Emergency Response: Liberty County</small>
+                        </div>
+
+                        <div class="information-item">
+                            <span>STATUS</span>
+                            <strong class="online-text">
+                                <span class="status-dot"></span>
+                                Operational
+                            </strong>
+                            <small>Command Hub operational</small>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- DEPARTMENTS -->
+
+                <section class="info-section">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <span class="section-label">03</span>
+                            <h3>Departments</h3>
+                        </div>
+
+                        <button class="text-button" data-page-target="departments">
+                            View Departments →
+                        </button>
+
+                    </div>
+
+
+                    <div class="department-grid">
+
+                        <div class="department-card nzp-card">
+
+                            <div class="department-icon">NZP</div>
+
+                            <div>
+                                <span>LAW ENFORCEMENT</span>
+                                <h4>New Zealand Police</h4>
+                                <p>
+                                    Law enforcement, traffic control,
+                                    investigations and public safety.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="department-card fenz-card">
+
+                            <div class="department-icon">FENZ</div>
+
+                            <div>
+                                <span>FIRE & RESCUE</span>
+                                <h4>Fire and Emergency NZ</h4>
+                                <p>
+                                    Fire suppression, rescue operations
+                                    and emergency response.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="department-card stjohn-card">
+
+                            <div class="department-icon">SJ</div>
+
+                            <div>
+                                <span>AMBULANCE</span>
+                                <h4>St John</h4>
+                                <p>
+                                    Medical response, patient care
+                                    and emergency ambulance services.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="department-card dot-card">
+
+                            <div class="department-icon">DOT</div>
+
+                            <div>
+                                <span>TRANSPORT</span>
+                                <h4>Department of Transport</h4>
+                                <p>
+                                    Road operations, traffic management
+                                    and transportation services.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- RULES -->
+
+                <section class="info-section">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <span class="section-label">04</span>
+                            <h3>Server Expectations</h3>
+                        </div>
+
+                    </div>
+
+
+                    <div class="rules-grid">
+
+                        <div class="rule-card">
+                            <strong>01</strong>
+                            <h4>Respect Others</h4>
+                            <p>
+                                Treat community members and staff with respect.
+                                Harassment and unnecessary disruption are not
+                                tolerated.
+                            </p>
+                        </div>
+
+                        <div class="rule-card">
+                            <strong>02</strong>
+                            <h4>Follow Roleplay</h4>
+                            <p>
+                                Maintain realistic and enjoyable roleplay while
+                                participating in server operations.
+                            </p>
+                        </div>
+
+                        <div class="rule-card">
+                            <strong>03</strong>
+                            <h4>Follow Staff Direction</h4>
+                            <p>
+                                Staff instructions should be followed during
+                                events, incidents and moderated situations.
+                            </p>
+                        </div>
+
+                        <div class="rule-card">
+                            <strong>04</strong>
+                            <h4>Use Common Sense</h4>
+                            <p>
+                                Play fairly, avoid exploiting systems and help
+                                maintain a positive community.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- HOW TO JOIN -->
+
+                <section class="join-section">
+
+                    <div>
+                        <span class="eyebrow">READY TO PARTICIPATE?</span>
+
+                        <h2>
+                            Join the community
+                        </h2>
+
+                        <p>
+                            Apply for a department or connect with the
+                            community to get started.
+                        </p>
+                    </div>
+
+                    <div class="join-actions">
+                        <button class="primary-button" data-page-target="applications">
+                            View Applications
+                        </button>
+
+                        <button class="secondary-button">
+                            Community Discord
+                        </button>
+                    </div>
+
+                </section>
+
             </div>
 
-            <div id="unitDetails" class="empty">
-              Select a unit from the map or unit list.
+
+
+            <!-- ================= LIVE MAP ================= -->
+
+            <div class="page" id="page-map">
+
+                <div class="page-header">
+
+                    <div>
+                        <span class="eyebrow">REAL-TIME OPERATIONS</span>
+                        <h1>Live Map</h1>
+                        <p>
+                            Real-time emergency service units and incidents.
+                        </p>
+                    </div>
+
+                    <div class="map-status">
+                        <span class="status-dot"></span>
+                        Awaiting API Connection
+                    </div>
+
+                </div>
+
+
+                <div class="map-toolbar">
+
+                    <button class="map-filter active" data-filter="ALL">
+                        ALL
+                    </button>
+
+                    <button class="map-filter" data-filter="NZP">
+                        NZP
+                    </button>
+
+                    <button class="map-filter" data-filter="FENZ">
+                        FENZ
+                    </button>
+
+                    <button class="map-filter" data-filter="ST JOHN">
+                        ST JOHN
+                    </button>
+
+                    <button class="map-filter" data-filter="DOT">
+                        DOT
+                    </button>
+
+                </div>
+
+
+                <div class="operations-layout">
+
+                    <div class="map-container">
+
+                        <div class="map-placeholder">
+
+                            <div class="map-placeholder-content">
+
+                                <div class="map-placeholder-icon">
+                                    ◉
+                                </div>
+
+                                <h3>Live ER:LC Map</h3>
+
+                                <p>
+                                    The real Liberty County map will appear
+                                    here once the ER:LC API is connected.
+                                </p>
+
+                                <small>
+                                    Map data will be provided by the
+                                    server API.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <aside class="unit-panel">
+
+                        <div class="panel-header">
+
+                            <div>
+                                <span class="eyebrow">LIVE OPERATIONS</span>
+                                <h3>Active Units</h3>
+                            </div>
+
+                            <span class="count" id="unitCount">0</span>
+
+                        </div>
+
+                        <div id="unitList" class="unit-list">
+
+                            <div class="empty-state">
+                                No live units detected.
+                            </div>
+
+                        </div>
+
+                    </aside>
+
+                </div>
+
             </div>
-          </div>
 
-        </aside>
 
-      </div>
 
-    </section>
+            <!-- ================= DISPATCH ================= -->
 
-    <!-- DISPATCH -->
-    <section class="page" id="dispatch">
+            <div class="page" id="page-dispatch">
 
-      <div class="page-heading">
-        <div>
-          <h2>Dispatch</h2>
-          <p>Manage active incidents and calls.</p>
-        </div>
+                <div class="page-header">
 
-        <button class="primary" onclick="createCall()">+ New Call</button>
-      </div>
+                    <div>
+                        <span class="eyebrow">EMERGENCY OPERATIONS</span>
+                        <h1>Dispatch</h1>
+                        <p>
+                            Emergency calls detected from the ER:LC server.
+                        </p>
+                    </div>
 
-      <div class="dispatch-grid">
-        <div class="panel">
-          <div class="panel-head">
-            <h3>Active Calls</h3>
-          </div>
-          <div id="dispatchCalls"></div>
-        </div>
+                    <div class="api-status">
+                        <span class="status-dot"></span>
+                        Automatic Detection
+                    </div>
 
-        <div class="panel">
-          <div class="panel-head">
-            <h3>Dispatch Information</h3>
-          </div>
+                </div>
 
-          <div class="info-row">
-            <span>System</span>
-            <strong>Command Hub</strong>
-          </div>
 
-          <div class="info-row">
-            <span>Map</span>
-            <strong>Liberty County</strong>
-          </div>
+                <div class="dispatch-layout">
 
-          <div class="info-row">
-            <span>Departments</span>
-            <strong>4</strong>
-          </div>
+                    <section class="calls-panel">
 
-          <div class="info-row">
-            <span>Connection</span>
-            <strong class="green">READY</strong>
-          </div>
-        </div>
-      </div>
+                        <div class="panel-header">
 
-    </section>
+                            <div>
+                                <span class="eyebrow">LIVE FEED</span>
+                                <h3>Emergency Calls</h3>
+                            </div>
 
-    <!-- UNITS -->
-    <section class="page" id="units">
+                            <span class="live-label">
+                                LIVE
+                            </span>
 
-      <div class="page-heading">
-        <div>
-          <h2>Units</h2>
-          <p>Operational units currently available.</p>
-        </div>
-      </div>
+                        </div>
 
-      <div class="panel">
-        <div id="allUnits" class="large-unit-list"></div>
-      </div>
 
-    </section>
+                        <div id="callsList" class="calls-list">
 
-    <!-- DEPARTMENTS -->
-    <section class="page" id="departments">
+                            <div class="empty-state">
 
-      <div class="page-heading">
-        <div>
-          <h2>Departments</h2>
-          <p>Manage operational departments.</p>
-        </div>
-      </div>
+                                <div class="empty-icon">☷</div>
 
-      <div class="department-grid">
-        <div class="department nzp">
-          <strong>NZP</strong>
-          <span>New Zealand Police</span>
-        </div>
+                                <h4>No active calls</h4>
 
-        <div class="department fenz">
-          <strong>FENZ</strong>
-          <span>Fire and Emergency</span>
-        </div>
+                                <p>
+                                    Emergency calls detected in ER:LC will
+                                    automatically appear here.
+                                </p>
 
-        <div class="department stj">
-          <strong>ST JOHN</strong>
-          <span>Ambulance Services</span>
-        </div>
+                            </div>
 
-        <div class="department dot">
-          <strong>DOT</strong>
-          <span>Department of Transport</span>
-        </div>
-      </div>
+                        </div>
 
-    </section>
+                    </section>
 
-    <!-- REPORTS -->
-    <section class="page" id="reports">
 
-      <div class="page-heading">
-        <div>
-          <h2>Reports</h2>
-          <p>Operational reports and records.</p>
-        </div>
-      </div>
+                    <aside class="dispatch-info">
 
-      <div class="panel empty-large">
-        <strong>Reports System</strong>
-        <span>Ready for report creation and storage.</span>
-      </div>
+                        <div class="panel-header">
 
-    </section>
+                            <div>
+                                <span class="eyebrow">SYSTEM</span>
+                                <h3>Dispatch Status</h3>
+                            </div>
 
-    <!-- APPLICATIONS -->
-    <section class="page" id="applications">
+                        </div>
 
-      <div class="page-heading">
-        <div>
-          <h2>Applications</h2>
-          <p>Manage department applications.</p>
-        </div>
-      </div>
 
-      <div class="panel empty-large">
-        <strong>No pending applications</strong>
-        <span>New applications will appear here.</span>
-      </div>
+                        <div class="dispatch-status">
 
-    </section>
+                            <div class="status-row">
+                                <span>Call Detection</span>
+                                <strong class="green">READY</strong>
+                            </div>
 
-    <!-- WATCHDOG -->
-    <section class="page" id="watchdog">
+                            <div class="status-row">
+                                <span>Automatic Calls</span>
+                                <strong>ENABLED</strong>
+                            </div>
 
-      <div class="page-heading">
-        <div>
-          <h2>AI Watchdog</h2>
-          <p>Monitor unusual operational activity.</p>
-        </div>
-      </div>
+                            <div class="status-row">
+                                <span>Map Pinpointing</span>
+                                <strong>READY</strong>
+                            </div>
 
-      <div class="watchdog-grid">
+                            <div class="status-row">
+                                <span>ER:LC API</span>
+                                <strong class="yellow">PENDING</strong>
+                            </div>
 
-        <div class="watch-card">
-          <span class="watch-icon">✓</span>
-          <div>
-            <strong>System Monitoring</strong>
-            <p>Watchdog is ready for live telemetry.</p>
-          </div>
-          <b class="green">READY</b>
-        </div>
+                        </div>
 
-        <div class="watch-card">
-          <span class="watch-icon">!</span>
-          <div>
-            <strong>Speed Monitoring</strong>
-            <p>Abnormal speed detection will appear here.</p>
-          </div>
-          <b>STANDBY</b>
-        </div>
 
-      </div>
+                        <div class="dispatch-note">
 
-    </section>
+                            <strong>Automatic Dispatch</strong>
 
-    <!-- MANAGEMENT -->
-    <section class="page" id="management">
+                            <p>
+                                Calls will be retrieved directly from the
+                                ER:LC server once the API connection is
+                                configured.
+                            </p>
 
-      <div class="page-heading">
-        <div>
-          <h2>Management</h2>
-          <p>Command hub administration.</p>
-        </div>
-      </div>
+                        </div>
 
-      <div class="management-grid">
-        <div class="panel">
-          <h3>Permissions</h3>
-          <p>Manage staff access and department permissions.</p>
-        </div>
+                    </aside>
 
-        <div class="panel">
-          <h3>System Configuration</h3>
-          <p>Configure the command hub and integrations.</p>
-        </div>
-      </div>
+                </div>
 
-    </section>
+            </div>
 
-  </main>
+
+
+            <!-- ================= UNITS ================= -->
+
+            <div class="page" id="page-units">
+
+                <div class="page-header">
+
+                    <div>
+                        <span class="eyebrow">FIELD OPERATIONS</span>
+                        <h1>Units</h1>
+                        <p>
+                            Monitor emergency service units.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="large-panel">
+
+                    <div class="panel-header">
+                        <h3>Unit Registry</h3>
+                        <span class="count">LIVE</span>
+                    </div>
+
+                    <div id="fullUnitList" class="full-unit-list">
+
+                        <div class="empty-state">
+                            Live unit information will appear here once
+                            the ER:LC API is connected.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================= DEPARTMENTS ================= -->
+
+            <div class="page" id="page-departments">
+
+                <div class="page-header">
+
+                    <div>
+                        <span class="eyebrow">ORGANISATION</span>
+                        <h1>Departments</h1>
+                        <p>
+                            Information about the services operating within
+                            the community.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="department-page-grid">
+
+                    <div class="department-large nzp-card">
+                        <span>LAW ENFORCEMENT</span>
+                        <h2>New Zealand Police</h2>
+                        <p>
+                            Responsible for public safety, policing,
+                            traffic enforcement and investigations.
+                        </p>
+                    </div>
+
+                    <div class="department-large fenz-card">
+                        <span>FIRE & RESCUE</span>
+                        <h2>Fire and Emergency NZ</h2>
+                        <p>
+                            Responds to fires, rescues, hazardous incidents
+                            and other emergencies.
+                        </p>
+                    </div>
+
+                    <div class="department-large stjohn-card">
+                        <span>AMBULANCE</span>
+                        <h2>St John</h2>
+                        <p>
+                            Provides emergency medical response and
+                            ambulance services.
+                        </p>
+                    </div>
+
+                    <div class="department-large dot-card">
+                        <span>TRANSPORT</span>
+                        <h2>Department of Transport</h2>
+                        <p>
+                            Handles transportation, road operations and
+                            traffic management.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================= REPORTS ================= -->
+
+            <div class="page" id="page-reports">
+
+                <div class="page-header">
+
+                    <div>
+                        <span class="eyebrow">ADMINISTRATION</span>
+                        <h1>Reports</h1>
+                        <p>
+                            View and manage operational reports.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="large-panel">
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">▤</div>
+
+                        <h3>No reports available</h3>
+
+                        <p>
+                            Reports will appear here when the reporting
+                            system is connected.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================= APPLICATIONS ================= -->
+
+            <div class="page" id="page-applications">
+
+                <div class="page-header">
+
+                    <div>
+                        <span class="eyebrow">JOIN THE TEAM</span>
+                        <h1>Applications</h1>
+                        <p>
+                            Apply to become part of an emergency service
+                            department.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="application-grid">
+
+                    <div class="application-card">
+                        <span>NZP</span>
+                        <h3>New Zealand Police</h3>
+                        <p>
+                            Apply to join the law enforcement department.
+                        </p>
+                        <button>Apply</button>
+                    </div>
+
+                    <div class="application-card">
+                        <span>FENZ</span>
+                        <h3>Fire and Emergency NZ</h3>
+                        <p>
+                            Apply to join fire and rescue operations.
+                        </p>
+                        <button>Apply</button>
+                    </div>
+
+                    <div class="application-card">
+                        <span>SJ</span>
+                        <h3>St John</h3>
+                        <p>
+                            Apply to join emergency medical services.
+                        </p>
+                        <button>Apply</button>
+                    </div>
+
+                    <div class="application-card">
+                        <span>DOT</span>
+                        <h3>Department of Transport</h3>
+                        <p>
+                            Apply to join transport operations.
+                        </p>
+                        <button>Apply</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================= WATCHDOG ================= -->
+
+            <div class="page" id="page-watchdog">
+
+                <div class="page-header">
+
+                    <div>
+                        <span class="eyebrow">SECURITY & MONITORING</span>
+                        <h1>Watchdog</h1>
+                        <p>
+                            Monitor system health and operational services.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="watchdog-grid">
+
+                    <div class="watchdog-card">
+                        <span class="status-dot"></span>
+                        <div>
+                            <strong>Command Hub</strong>
+                            <small>Operational</small>
+                        </div>
+                    </div>
+
+                    <div class="watchdog-card">
+                        <span class="status-dot"></span>
+                        <div>
+                            <strong>Frontend</strong>
+                            <small>Operational</small>
+                        </div>
+                    </div>
+
+                    <div class="watchdog-card pending">
+                        <span class="status-dot"></span>
+                        <div>
+                            <strong>ER:LC API</strong>
+                            <small>Awaiting configuration</small>
+                        </div>
+                    </div>
+
+                    <div class="watchdog-card">
+                        <span class="status-dot"></span>
+                        <div>
+                            <strong>Database</strong>
+                            <small>Ready</small>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================= MANAGEMENT ================= -->
+
+            <div class="page" id="page-management">
+
+                <div class="page-header">
+
+                    <div>
+                        <span class="eyebrow">STAFF CONTROL</span>
+                        <h1>Management</h1>
+                        <p>
+                            Administrative tools for authorised staff.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="management-grid">
+
+                    <div class="management-card">
+                        <span>STAFF</span>
+                        <h3>Staff Management</h3>
+                        <p>
+                            Manage authorised Command Hub staff.
+                        </p>
+                    </div>
+
+                    <div class="management-card">
+                        <span>DEPARTMENTS</span>
+                        <h3>Department Management</h3>
+                        <p>
+                            Manage department access and permissions.
+                        </p>
+                    </div>
+
+                    <div class="management-card">
+                        <span>SYSTEM</span>
+                        <h3>System Settings</h3>
+                        <p>
+                            Configure Command Hub settings.
+                        </p>
+                    </div>
+
+                    <div class="management-card">
+                        <span>ACCESS</span>
+                        <h3>Permissions</h3>
+                        <p>
+                            Control access to administrative features.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
 </div>
 
 <script src="app.js"></script>
+
 </body>
 </html>
